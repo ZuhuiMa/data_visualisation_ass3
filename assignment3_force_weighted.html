@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Graph with Weight</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.js"></script>
+    <script src="data.json"></script>
+  </head>
+  <body>
+    <a href="./index.html">Back to index</a>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 100%; height: 800px"></div>
+
+    <script type="text/javascript">
+      var myChart = echarts.init(document.getElementById("main"));
+      myChart.showLoading();
+      $.get("data.json", function (data) {
+        myChart.hideLoading();
+
+        option = {
+          legend: {
+            left: "20%",
+            bottom: "20px",
+            orient: "vertical",
+            data: [
+              "Board of Directors",
+              "CEO",
+              "Business Development Unit",
+              "Business Support Unit",
+              "Business Control Unit",
+            ],
+          },
+          tooltip: {
+            trigger: "item",
+            formatter: function (params) {
+              console.log(params);
+              if (params.dataType == "node") {
+                var name = "Name: " + params.data.name;
+                var position = "Position: " + params.data.position;
+                var department = "Department: " + params.data.department;
+                return name + "<br>" + position + "<br>" + department;
+              } else {
+                var source = params.data.source;
+                var source_name = data.nodes[source].name;
+                var target = params.data.target;
+                var target_name = data.nodes[target].name;
+                var flow = source_name + " -> " + target_name;
+                var detail = "Emails per month: " + params.data.emails;
+                return flow + "<br>" + detail;
+              }
+            },
+          },
+          animationEasingUpdate: "quinticInOut",
+          series: [
+            {
+              type: "graph",
+              layout: "force",
+              animation: true,
+              label: {
+                show: true,
+                position: "right",
+                formatter: "{b}",
+              },
+              zoom: 3,
+              roam: true,
+              draggable: true,
+              focusNodeAdjacency: true,
+              data: data.nodes.map(function (node, idx) {
+                node.id = idx;
+                node.symbolSize = node.value / 2;
+                return node;
+              }),
+              categories: data.categories,
+              force: {
+                repulsion: 400,
+                gravity: 0.5,
+                edgeLength: [10, 70],
+                // edgeLength:10
+              },
+
+              links: data.links.map(function (link, idx) {
+                link.id = idx;
+                return link;
+              }),
+              lineStyle: {
+                color: "source",
+                curveness: 0.14,
+                opacity: 0.5,
+              },
+
+              emphasis: {
+                lineStyle: {
+                  width: 10,
+                },
+              },
+            },
+          ],
+        };
+        myChart.setOption(option);
+      });
+      myChart.on("dataZoom", function (event) {
+        if (event.batch) {
+          start = event.batch[0].start;
+          end = event.batch[0].end;
+        } else {
+          start = event.start;
+          end = event.end;
+        }
+      });
+    </script>
+  </body>
+</html>
