@@ -6,7 +6,7 @@
     <!-- 引入 echarts.js -->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.js"></script>
-    <script src="data.json"></script>
+    <script src="data_ori.json"></script>
   </head>
   <body>
     <a href="./index.html">Back to index</a>
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var myChart = echarts.init(document.getElementById("main"));
       myChart.showLoading();
-      $.get("data.json", function (data) {
+      $.get("data_ori.json", function (data) {
         myChart.hideLoading();
 
         option = {
@@ -66,7 +66,7 @@
               zoom: 4,
               roam: true,
               draggable: true,
-              focusNodeAdjacency: true,
+              // focusNodeAdjacency: true,
               data: data.nodes.map(function (node, idx) {
                 node.id = idx;
                 node.symbolSize = 5;
@@ -88,6 +88,8 @@
                 color: "green",
                 curveness: 0.14,
                 opacity: 0.5,
+                width: 4
+                
               },
 
               emphasis: {
