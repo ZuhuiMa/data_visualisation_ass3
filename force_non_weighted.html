@@ -2,17 +2,21 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Graph with Weight</title>
+    <title>Graph Without Weights</title>
     <!-- 引入 echarts.js -->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.js"></script>
     <script src="data.json"></script>
   </head>
   <body>
-    <a href="./index.html">Back to index</a><br />
-    <p>This is the graph weights</p>
+    <h4>Student Name: Zuhui Ma</h4>
+    <h4>Student ID: 13404658</h4>
+    <a href="./index.html"
+      >Click here to check graph with weights</a
+    ><br />
+    <p>This is the graph without weights</p>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="main" style="width: 100%; height: 800px"></div>
+    <div id="main" style="width: 100%; height: 750px"></div>
 
     <script type="text/javascript">
       var myChart = echarts.init(document.getElementById("main"));
@@ -64,7 +68,7 @@
                 position: "right",
                 formatter: "{b}",
               },
-              zoom: 2.8,
+              zoom: 2.5,
               roam: true,
               draggable: true,
               focusNodeAdjacency: true,
@@ -75,10 +79,10 @@
               }),
               categories: data.categories,
               force: {
-                repulsion: 400,
-                gravity: 0.5,
-                edgeLength: [10, 70],
-                // edgeLength:10
+                repulsion: 200,
+                gravity: 0.3,
+                // edgeLength: [10, 70],
+                edgeLength: 5,
               },
 
               links: data.links.map(function (link, idx) {
@@ -99,6 +103,13 @@
             },
           ],
         };
+        myChart.setOption(option);
+      });
+      myChart.on("mouseup", function (params) {
+        var option = myChart.getOption();
+        option.series[0].data[params.dataIndex].x = params.event.offsetX;
+        option.series[0].data[params.dataIndex].y = params.event.offsetY;
+        option.series[0].data[params.dataIndex].fixed = true;
         myChart.setOption(option);
       });
       myChart.on("dataZoom", function (event) {
